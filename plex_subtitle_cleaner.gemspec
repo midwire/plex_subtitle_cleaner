@@ -18,9 +18,15 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
+  spec.add_dependency 'trollop'
+  spec.add_dependency 'colored'
+  spec.add_dependency 'midwire_common', '~> 0.1.11'
+
   spec.add_development_dependency 'bundler', '~> 1.7'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'pry-nav'
   spec.add_development_dependency 'rspec', '~> 3.1'
+  spec.add_development_dependency 'guard', '2.10.1'
+  spec.add_development_dependency 'guard-rspec', '4.3.1'
 end
