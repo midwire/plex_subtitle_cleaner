@@ -6,16 +6,16 @@ require 'trollop'
 
 module PlexSubtitleCleaner
   CRAP_TEXT = [
-    /Subtitles downloaded from www.OpenSubtitles.org/i,
+    /^.*opensubtitles.*$/i,
     /^.*synced and corrected.*$/i,
-    /fixed and synced.*$/i,
-    /Created .* by .*$/i,
-    /Resync:.*/i,
-    /Subtitles by:.*/i,
-    /.*\;\).*$/i,
-    /.*\:\).*$/i,
-    /.+subtitles/i,
-    /.+www\.filebot.*$/
+    /^.*fixed and synced.*$/i,
+    /^.*created .* by .*$/i,
+    /^.*resync:.*/i,
+    /^.*subtitles by:.*/i,
+    /^.*\;\).*$/i,
+    /^.*\:\).*$/i,
+    /^.+subtitles/i,
+    /^.+www\.filebot.*$/
   ]
 
   def self.root

@@ -1,6 +1,6 @@
 # PlexSubtitleCleaner
 
-TODO: Write a gem description
+A very simple gem that cleans Plex subtitles of advertising and other garbage.
 
 ## Installation
 
@@ -20,7 +20,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Run it in your Mac terminal. It assumes the path to your library as: '$HOME/Library/Application Support/Plex Media Server/Media'
+
+    $ ./bin/plex_subtitle_cleaner
+
+I plan to allow passing the path at some point.
 
 ## Contributing
 
