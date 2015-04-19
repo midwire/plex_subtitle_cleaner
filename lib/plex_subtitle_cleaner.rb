@@ -7,7 +7,10 @@ require 'trollop'
 module PlexSubtitleCleaner
   CRAP_TEXT = [
     /^.*opensubtitles.*$/i,
-    /^.*synced and corrected.*$/i,
+    /^.*sync,.*$/i,
+    /^.*synch?ed by.*$/i,
+    /^.*synch?ed and corrected.*$/i,
+    /^.*synch?ed & corrected.*$/i,
     /^.*fixed and synced.*$/i,
     /^.*created .* by .*$/i,
     /^.*resync:.*/i,
@@ -25,11 +28,9 @@ module PlexSubtitleCleaner
   class Cleaner
     include FileUtils
 
-    def self.run(*args)
+    def self.run(*_args)
       start_time = Time.now
-      opts = Trollop.options do
-        opt(:file, 'A single subtitle file to clean', type: :string, short: 'f', required: false)
-      end
+      opts = collect_options
 
       instance = Cleaner.new(opts)
       instance.process
@@ -37,19 +38,20 @@ module PlexSubtitleCleaner
       instance.report_summary
     end
 
-    attr_accessor :options, :elapsed, :file_count
+    attr_accessor :options, :elapsed
 
     def initialize(opts)
-      self.options    = opts
-      self.file_count = 0
+      self.options = opts
+      @file_count = 0
     end
 
     def report_summary
       puts
-      puts(">>> Processed #{file_count.to_i} files in [#{elapsed}] seconds".yellow)
+      puts(">>> Processed #{@file_count.to_i} files in [#{elapsed}] seconds".yellow)
     end
 
     def process
+      puts(">>> Processing... 1 dot == 100 files.")
       if options[:file]
         clean_file(options[:file])
       else
@@ -62,28 +64,47 @@ module PlexSubtitleCleaner
       Dir.glob('**/*.srt').each do |sub|
         clean_file(sub)
       end
+      puts
     end
 
     def clean_file(filepath)
       # open file and remove the crap
-      puts(">>> #{filepath}".yellow)
+      print('.') if @file_count % 100 == 0
+      @file_count += 1
       contents = clean(File.read(filepath))
       File.open(filepath, 'w') { |f| f.write(contents) }
     end
 
     def clean(content)
-      result = content.dup.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+      result = content.dup.encode(
+        'UTF-8', 'binary', invalid: :replace, undef: :replace, replace: ''
+      )
       CRAP_TEXT.each do |regex|
-        result.gsub!(regex, ' ')
+        md = result.match(regex)
+        if md
+          puts(">>> Found #{md[0]}".yellow)
+          result.gsub!(regex, ' ')
+        end
       end
       result
     end
 
     private
 
+    def self.collect_options
+      Trollop.options do
+        opt(
+          :file,
+          'A single subtitle file to clean',
+          type: :string,
+          short: 'f',
+          required: false)
+      end
+    end
+
     def starting_directory
       path = Pathname.new(ENV['HOME'])
-      path = path.join('Library/Application Support/Plex Media Server/Media')
+      path.join('Library/Application Support/Plex Media Server/Media')
     end
   end
 end
