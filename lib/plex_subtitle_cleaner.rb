@@ -6,8 +6,10 @@ require 'trollop'
 
 module PlexSubtitleCleaner
   CRAP_TEXT = [
+    /^.*<font.*$/i,
     /^.*opensubtitles.*$/i,
     /^.*sync,.*$/i,
+    /^.*sync &.*$/i,
     /^.*synch?ed by.*$/i,
     /^.*synch?ed and corrected.*$/i,
     /^.*synch?ed & corrected.*$/i,
