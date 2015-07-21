@@ -4,18 +4,6 @@ A very simple gem that cleans Plex subtitles of advertising and other garbage.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'plex_subtitle_cleaner'
-```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
     $ gem install plex_subtitle_cleaner
 
 ## Usage
