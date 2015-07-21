@@ -8,19 +8,15 @@ module PlexSubtitleCleaner
   CRAP_TEXT = [
     /^.*<font.*$/i,
     /^.*opensubtitles.*$/i,
-    /^.*sync,.*$/i,
-    /^.*sync &.*$/i,
-    /^.*synch?ed by.*$/i,
-    /^.*synch?ed and corrected.*$/i,
-    /^.*synch?ed & corrected.*$/i,
-    /^.*fixed and synced.*$/i,
+    /^.*sync.+$/i,
     /^.*created .* by .*$/i,
     /^.*resync:.*/i,
-    /^.*subtitles by:.*/i,
+    /^.*subtitle.*/i,
+    /^.*sourced by.*/i,
     /^.*\;\).*$/i,
     /^.*\:\).*$/i,
     /^.+subtitles/i,
-    /^.+www\.filebot.*$/
+    /^.*www\..*$/
   ]
 
   def self.root
@@ -57,11 +53,11 @@ module PlexSubtitleCleaner
       if options[:file]
         clean_file(options[:file])
       else
-        clean_directory
+        clean_directory(options[:path])
       end
     end
 
-    def clean_directory(start_dir = starting_directory)
+    def clean_directory(start_dir)
       cd(start_dir)
       Dir.glob('**/*.srt').each do |sub|
         clean_file(sub)
@@ -94,6 +90,7 @@ module PlexSubtitleCleaner
     private
 
     def self.collect_options
+      dir = starting_directory
       Trollop.options do
         opt(
           :file,
@@ -101,10 +98,17 @@ module PlexSubtitleCleaner
           type: :string,
           short: 'f',
           required: false)
+        opt(
+          :path,
+          'Path to the root subtitle directory',
+          type: :string,
+          short: 'p',
+          default: dir.to_s,
+          required: false)
       end
     end
 
-    def starting_directory
+    def self.starting_directory
       path = Pathname.new(ENV['HOME'])
       path.join('Library/Application Support/Plex Media Server/Media')
     end
