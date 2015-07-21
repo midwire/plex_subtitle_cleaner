@@ -30,6 +30,11 @@ module PlexSubtitleCleaner
         |00:01:05,591 --> 00:01:10,562
         |Only time can teach us what
         |is truth and what is legend.
+        |
+        |5
+        |00:01:05,591 --> 00:01:10,562
+        |Sync by
+        |is truth and what is legend.
       string
       s.force_encoding('UTF-8')
     end

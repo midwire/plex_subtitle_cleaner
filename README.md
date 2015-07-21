@@ -22,7 +22,7 @@ Or install it yourself as:
 
 Run it in your Mac terminal. It assumes the path to your library as: '$HOME/Library/Application Support/Plex Media Server/Media'
 
-    $ ./bin/plex_subtitle_cleaner
+    $ ./bin/plex_subtitle_cleaner [-f ]
 
 I plan to allow passing the path at some point.
 
