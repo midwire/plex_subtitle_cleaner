@@ -20,11 +20,17 @@ Or install it yourself as:
 
 ## Usage
 
-Run it in your Mac terminal. It assumes the path to your library as: '$HOME/Library/Application Support/Plex Media Server/Media'
+Run it in your Mac terminal. It defaults the path to your library as: '$HOME/Library/Application Support/Plex Media Server/Media'
 
-    $ ./bin/plex_subtitle_cleaner [-f ]
+    $ ./bin/plex_subtitle_cleaner [-fp]
 
-I plan to allow passing the path at some point.
+To set the path:
+
+    $ ./bin/plex_subtitle_cleaner -p /Users/myname/mypath
+
+To clean a single file:
+
+    $ ./bin/plex_subtitle_cleaner -f /Users/myname/mypath/mysubtitle.srt
 
 ## Contributing
 
