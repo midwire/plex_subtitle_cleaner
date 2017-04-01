@@ -8,6 +8,10 @@ If you are a [Plex](https://www.plex.tv/) user, you may have noticed the subtitl
 
 ## Installation
 
+First, you need to install [Ruby](https://www.ruby-lang.org/en/downloads/). Version 2.3.1 or greater.
+
+Then use rubygems to install:
+
     $ gem install plex_subtitle_cleaner
 
 ## Usage
