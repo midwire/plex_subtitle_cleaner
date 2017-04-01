@@ -1,6 +1,5 @@
 require 'plex_subtitle_cleaner/version'
 require 'fileutils'
-require 'pry'
 require 'colored'
 require 'trollop'
 
@@ -12,6 +11,9 @@ module PlexSubtitleCleaner
     /^.*created .* by .*$/i,
     /^.*resync:.*/i,
     /^.*subtitle.*/i,
+    /^.*T.?U.?S.?U.?B.?T.?I.?T.?U.?L.?O*/i,
+    /^.*subs from.*/i,
+    /^.*subs by.*/i,
     /^.*sourced by.*/i,
     /^.*\;\).*$/i,
     /^.*\:\).*$/i,
@@ -36,6 +38,37 @@ module PlexSubtitleCleaner
       instance.report_summary
     end
 
+    def self.collect_options
+      dir = starting_directory
+      Trollop.options do
+        opt(
+          :file,
+          'A single subtitle file to clean',
+          type: :string,
+          short: 'f',
+          required: false)
+        opt(
+          :path,
+          'Path to the root subtitle directory',
+          type: :string,
+          short: 'p',
+          default: dir.to_s,
+          required: false)
+        opt(
+          :verbose,
+          'Be verbose with output',
+          type: :boolean,
+          required: false,
+          short: '-v',
+          default: false)
+      end
+    end
+
+    def self.starting_directory
+      path = Pathname.new(ENV['HOME'])
+      path.join('Library/Application Support/Plex Media Server/Media')
+    end
+
     attr_accessor :options, :elapsed
 
     def initialize(opts)
@@ -45,11 +78,12 @@ module PlexSubtitleCleaner
 
     def report_summary
       puts
-      puts(">>> Processed #{@file_count.to_i} files in [#{elapsed}] seconds".yellow)
+      puts("Processed #{@file_count.to_i} files in [#{elapsed}] seconds".yellow)
     end
 
     def process
-      puts(">>> Processing... 1 dot == 100 files.")
+      puts('Starting PlexSubtitleCleaner'.green)
+      puts('Processing... 1 dot == 100 files, x == cleaned subtitles.')
       if options[:file]
         clean_file(options[:file])
       else
@@ -69,6 +103,7 @@ module PlexSubtitleCleaner
       # open file and remove the crap
       print('.') if @file_count % 100 == 0
       @file_count += 1
+      return nil unless File.exist?(filepath)
       contents = clean(File.read(filepath))
       File.open(filepath, 'w') { |f| f.write(contents) }
     end
@@ -80,37 +115,12 @@ module PlexSubtitleCleaner
       CRAP_TEXT.each do |regex|
         md = result.match(regex)
         if md
-          puts(">>> Found #{md[0]}".yellow)
+          print('x'.yellow)
+          puts(">>> Found #{md[0]}".yellow) if options[:verbose]
           result.gsub!(regex, ' ')
         end
       end
       result
-    end
-
-    private
-
-    def self.collect_options
-      dir = starting_directory
-      Trollop.options do
-        opt(
-          :file,
-          'A single subtitle file to clean',
-          type: :string,
-          short: 'f',
-          required: false)
-        opt(
-          :path,
-          'Path to the root subtitle directory',
-          type: :string,
-          short: 'p',
-          default: dir.to_s,
-          required: false)
-      end
-    end
-
-    def self.starting_directory
-      path = Pathname.new(ENV['HOME'])
-      path.join('Library/Application Support/Plex Media Server/Media')
     end
   end
 end
