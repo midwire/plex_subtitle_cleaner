@@ -1,5 +1,4 @@
 require 'plex_subtitle_cleaner/version'
-require 'fileutils'
 require 'colored'
 require 'trollop'
 
@@ -26,7 +25,7 @@ module PlexSubtitleCleaner
   end
 
   class Cleaner
-    include FileUtils
+    # include FileUtils
 
     def self.run(*_args)
       start_time = Time.now
@@ -66,6 +65,7 @@ module PlexSubtitleCleaner
 
     def self.starting_directory
       path = Pathname.new(ENV['HOME'])
+      # Default path on a Mac computer
       path.join('Library/Application Support/Plex Media Server/Media')
     end
 
@@ -88,15 +88,15 @@ module PlexSubtitleCleaner
         clean_file(options[:file])
       else
         clean_directory(options[:path])
+        puts
       end
     end
 
     def clean_directory(start_dir)
-      cd(start_dir)
-      Dir.glob('**/*.srt').each do |sub|
+      path = File.join(start_dir, '**', '*.srt')
+      Dir.glob(path).each do |sub|
         clean_file(sub)
       end
-      puts
     end
 
     def clean_file(filepath)
